@@ -1,0 +1,1 @@
+(import ../activate.nix {}).env
