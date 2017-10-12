@@ -38,8 +38,10 @@ prog args = shelly $ do
                  else argsMachines args
     for_ machines $ buildMachineEnv args
     activator <- buildActivate args
-    for_ dep $ nixCopyClosure activator
-    for_ dep $ activateMachine activator
+    for_ machines $ \m ->
+      for_ (Map.lookup m dep) $ \d -> do
+          nixCopyClosure activator d
+          activateMachine activator d
     pure ()
 
 getMkDeploy :: Sh FilePath
