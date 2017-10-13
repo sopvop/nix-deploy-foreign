@@ -64,8 +64,9 @@ instantiate Args{argsNixScript,argsNixPaths} = do
   where
     args runner = pathsArgs argsNixPaths
            <> [ "--eval", "--strict", "--json"
+              , "--read-write-mode"
               , "-A", "config.deploy", toTextArg runner
-              , "--arg", "deploy", argsNixScript]
+              , "--arg", "deploy", "import ./" <> argsNixScript]
 
 
 pathsArgs :: [(Text, Text)] -> [Text]
@@ -79,7 +80,7 @@ buildMachineEnv Args{argsNixScript,argsNixPaths} machine = do
  where
    args runner = pathsArgs argsNixPaths <>
                  [ toTextArg runner, "--arg", "deploy"
-                 , "import " <> argsNixScript
+                 , "import ./" <> argsNixScript
                  , "--no-out-link"
                  , "-A", "config.deploy." <> machine <> ".env"]
 

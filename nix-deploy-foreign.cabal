@@ -15,6 +15,17 @@ build-type:          Simple
 extra-source-files:  ChangeLog.md
 cabal-version:       >=1.10
 
+data-files:
+  activate.nix,
+  activate/activate.cabal,
+  activate/Main.hs,
+
+  mk-deploy.nix,
+  modules/machine.nix,
+  modules/upstart.nix
+
+data-dir: data
+
 executable nix-deploy-foreign
   main-is:             Main.hs
   -- other-modules:       

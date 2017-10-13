@@ -114,8 +114,10 @@ rollbackCmd  RollbackArgs{..} = do
           [ "-p"
           , toTextArg (unProfilePath rollbackProfile)
           , "--rollback" ]
+
       run_ (fromString self)
-          [ "--rollingback"
+          [ "activate"
+          , "--rollingback"
           , toTextArg (unProfilePath rollbackProfile)
           , toTextArg (unClosurePath closure) ]
 
@@ -323,8 +325,10 @@ rollbackActivation profile newClosure oldClosure =
           , toTextArg (unProfilePath profile)
           , "--rollback" ]
       self <- liftIO getExecutablePath
+
       run_ (fromString self)
-          [ "--rollingback"
+          [ "activate"
+          , "--rollingback"
           , toTextArg (unProfilePath profile)
           , toTextArg (unClosurePath newClosure) ]
 
@@ -394,14 +398,17 @@ reloadUpstart = run_ "sudo" ["/sbin/initctl", "reload-configuration"]
 
 stopServices :: [Text] -> Sh ()
 stopServices names =
- run_ "sudo" ("/sbin/initctl":"stop":names)
+ for_ names $ \name ->
+   run_ "sudo" ("/sbin/initctl":"stop":[name])
 
 startServices :: [Text] -> Sh ()
 startServices names =
- run_ "sudo" ("/sbin/initctl":"start":names)
+ for_ names $ \name ->
+   run_ "sudo" ("/sbin/initctl":"start":[name])
 
 restartServices :: [Text] -> Sh ()
 restartServices names =
- run_ "sudo" ("/sbin/initctl":"restart":names)
+ for_ names $ \name ->
+   run_ "sudo" ("/sbin/initctl":"restart":[name])
 
 
