@@ -160,15 +160,16 @@ activate oldClosure newClosure = do
   unlinkPaths oldDeploy
   linkPaths newDeploy
 
-  reloadUpstart
-
   unless (null toStop) $
     stopServices toStop
 
-  unless (null toRestart) $
-    restartServices toRestart
+  unless (null toRestart) $ do
+    stopServices toRestart
+    reloadUpstart
+    startServices toRestart
 
-  unless (null toStart) $
+  unless (null toStart) $ do
+    reloadUpstart
     startServices toStart
 
   echo "ok"
