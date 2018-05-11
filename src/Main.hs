@@ -48,10 +48,6 @@ getMkDeploy :: Sh FilePath
 getMkDeploy = (</> ("mk-deploy.nix" :: FilePath) )
              <$> liftIO getNixModulesPath
 
-getActivateNix :: Sh FilePath
-getActivateNix = (</> ("activate.nix" :: FilePath) )
-             <$> liftIO getNixModulesPath
-
 instantiate :: Args -> Sh Deployment
 instantiate Args{argsNixScript,argsNixPaths} = do
    echo "Instantitating deployment"
@@ -85,21 +81,18 @@ buildMachineEnv Args{argsNixScript,argsNixPaths} machine = do
                  , "-A", "config.deploy." <> machine <> ".env"]
 
 buildActivate :: Args -> Sh Text
-buildActivate Args{argsNixPaths} = do
-  echo "building activation binary"
-  nix <- getActivateNix
-  fmap Text.strip $ run "nix-build"
-          $ pathsArgs argsNixPaths <>
-          [toTextArg nix , "--no-out-link"  ]
-
-
+buildActivate _ = do
+  p <- liftIO getActivatePath
+  case p of
+    Nothing -> terror "Can't find activate closure"
+    Just a  -> pure (Text.pack a)
 
 nixCopyClosure :: Text -> Machine -> Sh ()
 nixCopyClosure activate m@Machine{env,name} = do
     echo $ "Copying enviroment to " <> name
     run_ "nix-copy-closure" ccargs
   where
-    ccargs = ["--sign", "--gzip", "--to", mkUserHost m, env, activate]
+    ccargs = ["--gzip", "--to", mkUserHost m, env, activate]
 
 mkUserHost :: Machine -> Text
 mkUserHost Machine{user,host} = user <> "@" <> host

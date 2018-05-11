@@ -28,7 +28,9 @@ data-dir: data
 
 executable nix-deploy-foreign
   main-is:             Main.hs
-  -- other-modules:       
+  other-modules: Deployment.Nix.Foreign.Args
+               , Deployment.Nix.Foreign.Paths
+               , Deployment.Nix.Foreign.Types
   -- other-extensions:    
   build-depends:       aeson                >= 1.1.2     && < 1.3,
                        base                 >= 4.9       && < 4.11,
@@ -41,4 +43,4 @@ executable nix-deploy-foreign
                        text                 >= 1.2.2.2   && < 1.3
   hs-source-dirs:      src
   default-language:    Haskell2010
-  ghc-options: -Wall
+  ghc-options: -Wall -Wextra -threaded

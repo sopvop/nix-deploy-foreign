@@ -9,7 +9,6 @@ let
     text = config.body;
   };
 
-
   serviceSubmodule = { name, config, ... }:
   {
     options = {

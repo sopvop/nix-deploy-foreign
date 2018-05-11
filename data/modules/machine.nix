@@ -41,7 +41,7 @@ let
       paths = config.paths;
     };
    config._module.args.pkgs = config.nixpkgs;
-   imports = [./upstart.nix ] ++ cfg.machineModules;
+   imports = [./upstart.nix ./etc.nix ] ++ cfg.machineModules;
   };
 
 machineConfig = _:args: {

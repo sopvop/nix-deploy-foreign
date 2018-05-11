@@ -1,22 +1,20 @@
-{-# LANGUAGE CPP #-}
 module Deployment.Nix.Foreign.Paths
     ( getNixModulesPath
+    , getActivatePath
     )
     where
-
-import           Control.Applicative ((<|>))
 
 import           Data.Maybe
 import           System.Environment
 
-#ifdef NIX_DEPLOY_FOREIGN_DATA
-compiledPath = "NIX_DEPLOY_FOREIGN_DATA"
-#else
-compiledPath = "data"
-#endif
-
+getNixModulesPath :: IO String
 getNixModulesPath = go <$> getEnvironment
   where
-    go =  fromMaybe compiledPath
+    go =  fromMaybe "data"
           . lookup "NIX_DEPLOY_FOREIGN_DATA"
+
+getActivatePath :: IO (Maybe String)
+getActivatePath = go <$> getEnvironment
+  where
+    go = lookup "NIX_DEPLOY_FOREIGN_ACTIVATE"
 

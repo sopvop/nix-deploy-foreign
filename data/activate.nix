@@ -1,7 +1,6 @@
 { nixpkgs ? import <nixpkgs> {} }:
 let
   ghc = nixpkgs.haskellPackages;
-  lib = nixpkgs.haskell.lib;
-  d = ghc.callCabal2nix "nix-deploy-foreign-activate" ./activate {};
+  d = ghc.callCabal2nix "activate" <activate-src> {};
 in
  lib.justStaticExecutables d
