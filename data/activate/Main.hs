@@ -276,7 +276,7 @@ checkRunningServices names =
        terror $ "Service is not a symlink: " <> toTextArg path
     target <- readSymlink path
     unless (Text.isPrefixOf "/nix/store" (toTextArg target)) .
-       terror $ "Service is not a symlink to store"
+       terror $ "Service is not a symlink to store "
                   <> toTextArg target
 
     pure $ Service name target
@@ -358,7 +358,7 @@ readSymlink path =
             `catchIOError` (ioError . annotate))
  where
    tpath = toTextArg path
-   bsPath = Text.encodeUtf8 tpath
+   bsPath = Text.encodeUtf8 $ Text.dropWhileEnd (== '/') tpath
    dir = fromString $ takeDirectory (Text.unpack tpath) :: FilePath
    annotate e =
      annotateIOError e "" Nothing (Just $ Text.unpack tpath)
